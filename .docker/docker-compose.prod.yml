@@ -1,0 +1,13 @@
+version: '3.8'
+
+services:
+  cpp_app:
+    build:
+      context: ../build
+      dockerfile: Dockerfile
+    logging:
+      driver: awslogs
+      options:
+        awslogs-group: my-project
+        awslogs-region: us-east-1
+        awslogs-stream-prefix: cpp-app 
