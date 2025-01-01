@@ -2,7 +2,4 @@ version: '3.8'
 
 services:
   cpp_app:
-    build: .
-    volumes:
-      - .:/app
-      - /app/build  # This prevents the host's build directory from mounting 
+    build: . 

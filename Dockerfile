@@ -1,4 +1,5 @@
-FROM alpine:3.18
+# Build stage
+FROM alpine:3.18 AS builder
 
 # Install build dependencies
 RUN apk add --no-cache \
@@ -17,5 +18,19 @@ WORKDIR /app
 # Copy project files
 COPY . .
 
-# Build commands will be run when container starts
-CMD ["sh", "./build.sh"] 
+# Build the application
+RUN chmod +x build.sh && ./build.sh
+
+# Runtime stage
+FROM alpine:3.18
+
+# Install only runtime dependencies
+RUN apk add --no-cache \
+    libstdc++ \
+    libgcc
+
+# Copy the built executable
+COPY --from=builder /app/build/my_project /app/my_project
+
+# Set the entrypoint
+ENTRYPOINT ["/app/my_project"] 
