@@ -1,39 +1,26 @@
 #!/bin/sh
 
-# Clean build directory
-rm -rf build
-mkdir -p build
-cd build
+echo "Building using Docker..."
 
-# Setup conan profile
-conan profile detect --force
+# Enable debug output
+set -x
 
-# Continue with build
-conan install .. --output-folder=. --build=missing
-cmake .. -DCMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake -DCMAKE_BUILD_TYPE=Release
-cmake --build .
+# Clean up any existing containers
+docker compose -f .docker/docker-compose.yml down
 
-# Generate minimal Dockerfile in build directory
-cat > Dockerfile << 'EOF'
-FROM alpine:3.18
+# Create buildx instance if it doesn't exist
+docker buildx create --name multiarch --driver docker-container --use || true
+docker buildx inspect --bootstrap
 
-# Install only runtime dependencies
-RUN apk add --no-cache \
-    libstdc++ \
-    libgcc
+# Build with debug output
+DOCKER_BUILDKIT=1 BUILDKIT_PROGRESS=plain docker compose -f .docker/docker-compose.yml build --no-cache
 
-WORKDIR /app
-COPY bin/my_project .
-
-ENTRYPOINT ["./my_project"]
-EOF
-
-# Create .dockerignore to exclude everything except the binary
-cat > .dockerignore << 'EOF'
-*
-!bin/my_project
-EOF
-
-# Optional: Build the minimal container
-echo "Building minimal container..."
-docker build -t my_project:minimal . 
+# Show container and binary information
+docker compose -f .docker/docker-compose.yml run --rm cpp_app /bin/sh -c '
+    echo "=== System Information ==="
+    uname -a
+    echo
+    echo "=== Binary Information ==="
+    file my_project
+    readelf -h my_project
+' 
