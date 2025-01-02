@@ -72,8 +72,4 @@ RUN set -x && \
 # Expose the web server port
 EXPOSE 8080
 
-# Run with unbuffered output
-ENV PYTHONUNBUFFERED=1
-ENV BOOST_ASIO_DISABLE_BUFFER_DEBUGGING=1
-
 ENTRYPOINT ["./my_project"] 
