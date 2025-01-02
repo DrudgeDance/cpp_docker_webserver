@@ -2,7 +2,6 @@
 #include <boost/beast/http.hpp>
 #include <boost/beast/version.hpp>
 #include <boost/asio.hpp>
-#include <fmt/core.h>
 #include <iostream>
 #include <chrono>
 #include <cstdlib>

@@ -2,8 +2,8 @@ services:
   cpp_app:
     platform: linux/arm64
     build:
-      context: ../build
-      dockerfile: ./Dockerfile
+      context: ..
+      dockerfile: .docker/Dockerfile
     ports:
       - "80:8080"
     logging:

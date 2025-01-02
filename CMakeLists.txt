@@ -12,9 +12,8 @@ find_package(Threads REQUIRED)
 # Set output directories
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
-# Find dependencies
-find_package(fmt REQUIRED)
-find_package(Boost REQUIRED)
+# Find Boost with required components
+find_package(Boost REQUIRED COMPONENTS system)
 
 # Add executable
 add_executable(${PROJECT_NAME} 
@@ -24,7 +23,7 @@ add_executable(${PROJECT_NAME}
 # Link libraries
 target_link_libraries(${PROJECT_NAME} 
     PRIVATE 
-    fmt::fmt
-    Boost::boost
+    Boost::system
+    Boost::headers
     Threads::Threads
 ) 
